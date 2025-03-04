@@ -15,9 +15,9 @@ let player, enemies, cursors, bullets, score = 0, scoreText;
 const game = new Phaser.Game(config);
 
 function preload() {
-    this.load.image('ship', 'assets/ship.png'); // Placeholder for now
-    this.load.image('enemy', 'assets/enemy.png');
-    this.load.image('bullet', 'assets/bullet.png');
+    this.load.image('ship', 'https://via.placeholder.com/32x32.png?text=Ship');
+this.load.image('enemy', 'https://via.placeholder.com/32x32.png?text=Enemy');
+this.load.image('bullet', 'https://via.placeholder.com/8x8.png?text=Bullet');
 }
 
 function create() {
