@@ -5,35 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galaga Remake - CoinArcade</title>
     <style>
-        body { 
-            margin: 0; 
-            padding: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            background: #000; 
-            overflow: hidden; 
-        }
-        canvas { 
-            max-width: 100%; 
-            max-height: 100%; 
-        }
-        #leaderboard { 
-    position: absolute; 
-    top: 40px; 
-    left: 10px; 
-    color: yellow; 
-    font-family: Arial; 
-    font-size: 16px; 
-    white-space: pre; 
-    background: rgba(0, 0, 0, 0.7); 
-    padding: 5px; 
-}
+        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #000; overflow: hidden; }
+        canvas { max-width: 100%; max-height: 100%; }
+        #leaderboard { position: absolute; top: 40px; left: 10px; color: yellow; font-family: Arial; font-size: 16px; white-space: pre; background: rgba(0, 0, 0, 0.7); padding: 5px; }
+        .payButton { position: absolute; top: 10px; padding: 5px 10px; background: #00f; color: #fff; border: none; cursor: pointer; }
+        #payButtonTRX { right: 150px; }
+        #payButtonUSDT { right: 80px; }
+        #payButtonUSDC { right: 10px; }
+        #shareButton { position: absolute; bottom: 10px; right: 10px; padding: 5px 10px; background: #1DA1F2; color: #fff; border: none; cursor: pointer; display: none; }
+        #contactLink { position: absolute; bottom: 10px; left: 10px; color: #fff; }
     </style>
 </head>
 <body>
+    <button id="payButtonTRX" class="payButton" onclick="payForLeaderboard('TRX')">Pay 4 TRX</button>
+    <button id="payButtonUSDT" class="payButton" onclick="payForLeaderboard('USDT')">Pay 1 USDT</button>
+    <button id="payButtonUSDC" class="payButton" onclick="payForLeaderboard('USDC')">Pay 1 USDC</button>
     <div id="leaderboard">Leaderboard: Loading...</div>
+    <button id="shareButton" onclick="shareScore()">Share on X</button>
+    <a id="contactLink" href="mailto:your_email@example.com">Contact Us</a>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tronweb@5.2.0/dist/TronWeb.js"></script>
     <script src="game.js"></script>
