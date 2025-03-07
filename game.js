@@ -18,18 +18,14 @@ function preload() {
 }
 
 function create() {
-    // Input
     cursors = this.input.keyboard.createCursorKeys();
-    this.input.addPointer(1); // Touch support
+    this.input.addPointer(1);
 
-    // Player
     player = this.physics.add.sprite(400, 550, 'ship').setCollideWorldBounds(true);
     player.setScale(0.5);
 
-    // Bullets
     bullets = this.physics.add.group();
 
-    // Enemies with swooping pattern
     enemies = this.physics.add.group();
     for (let i = 0; i < 10; i++) {
         let enemy = enemies.create(100 + i * 60, 50, 'enemy');
@@ -41,7 +37,6 @@ function create() {
         });
     }
 
-    // Collisions
     this.physics.add.collider(bullets, enemies, (bullet, enemy) => {
         bullet.destroy();
         enemy.destroy();
@@ -49,7 +44,6 @@ function create() {
         scoreText.setText('Score: ' + score);
     });
 
-    // Player-enemy collision (game over)
     this.physics.add.collider(player, enemies, () => {
         gameOver = true;
         player.setVisible(false);
@@ -57,28 +51,28 @@ function create() {
             fontSize: '40px', fill: '#fff', align: 'center' 
         }).setOrigin(0.5);
         this.physics.pause();
-        submitScoreToLeaderboard(score); // Call leaderboard function
+        submitScoreToLeaderboard(score);
+        document.getElementById('shareButton').style.display = 'block'; // Show share button
     });
 
-    // Score display
     scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '20px', fill: '#fff' });
+
+    // Reset share button when starting a new game
+    document.getElementById('shareButton').style.display = 'none';
 }
 
 function update() {
     if (gameOver) return;
 
-    // Player movement (keyboard)
     player.setVelocityX(0);
     if (cursors.left.isDown) player.setVelocityX(-200);
     if (cursors.right.isDown) player.setVelocityX(200);
 
-    // Player movement (touch)
     if (this.input.activePointer.isDown) {
         if (this.input.activePointer.x < 400) player.setVelocityX(-200);
         else player.setVelocityX(200);
     }
 
-    // Shooting
     if (cursors.space.isDown && !this.lastFired) {
         let bullet = bullets.create(player.x, player.y - 20, 'bullet');
         bullet.setVelocityY(-400);
@@ -87,8 +81,7 @@ function update() {
     }
 }
 
-// Placeholder for leaderboard submission
 function submitScoreToLeaderboard(score) {
-    console.log('Submitting score to leaderboard:', score);
-    // We’ll connect this to Tron later
+    window.submitScore(score);
+    window.currentScore = score; // Store score for sharing
 }
