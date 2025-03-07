@@ -1,6 +1,6 @@
 let tronWeb;
 let contract;
-const contractAddress = "YOUR_CONTRACT_ADDRESS_HERE"; // Replace with your deployed address after deployment
+const contractAddress = "YOUR_CONTRACT_ADDRESS_HERE"; // Replace after deployment
 
 async function initTron() {
     if (window.tronLink) {
@@ -9,6 +9,7 @@ async function initTron() {
         contract = await tronWeb.contract().at(contractAddress);
         document.getElementById('leaderboard').innerText = "Connected to TronLink!";
         updateLeaderboard();
+        updateLifetimePoints(); // Fetch initial points
     } else {
         document.getElementById('leaderboard').innerText = "Please install TronLink!";
     }
@@ -41,11 +42,12 @@ async function submitScore(score) {
             await contract.submitScore(score).send({ shouldPollResponse: true });
             console.log("Score submitted:", score);
             updateLeaderboard();
+            updateLifetimePoints();
             document.getElementById('payButtonTRX').disabled = false;
             document.getElementById('payButtonUSDT').disabled = false;
             document.getElementById('payButtonUSDC').disabled = false;
         } else {
-            console.log("Score not submitted (free play):", score);
+            console.log("Free play score not recorded:", score);
         }
     } catch (error) {
         console.error("Submission error:", error);
@@ -65,13 +67,25 @@ async function updateLeaderboard() {
     }
 }
 
+async function updateLifetimePoints() {
+    try {
+        const playerAddress = tronWeb.defaultAddress.hex;
+        const points = await contract.getLifetimePoints(playerAddress).call();
+        window.lifetimePoints = points.toNumber(); // Store globally
+        if (window.game && window.game.scene.scenes[0].lifetimePointsText) {
+            window.game.scene.scenes[0].lifetimePointsText.setText('Lifetime Points: ' + window.lifetimePoints);
+        }
+    } catch (error) {
+        console.error("Lifetime points fetch error:", error);
+    }
+}
+
 window.addEventListener('load', initTron);
 window.submitScore = submitScore;
 
-// New code starts here
 function shareScore() {
     const score = window.currentScore || 0;
-    const tweetText = `I scored ${score} in Galaga on CoinArcade! Play now at https://cartiercode.github.io/coinarcade/ #Galaga #Tron #CoinArcade`;
+    const tweetText = `I scored ${score} in Galaga on CoinArcade! My lifetime points: ${window.lifetimePoints || 0}. Play now at https://cartiercode.github.io/coinarcade/ #Galaga #Tron #CoinArcade`;
     const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
     window.open(tweetUrl, '_blank');
 }
