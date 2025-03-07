@@ -7,7 +7,7 @@ const config = {
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH }
 };
 
-let player, enemies, cursors, bullets, score = 0, scoreText, gameOver = false, gameOverText;
+let player, enemies, cursors, bullets, score = 0, scoreText, gameOver = false, gameOverText, lifetimePointsText;
 
 const game = new Phaser.Game(config);
 
@@ -47,17 +47,19 @@ function create() {
     this.physics.add.collider(player, enemies, () => {
         gameOver = true;
         player.setVisible(false);
-        gameOverText = this.add.text(400, 300, 'Game Over\nScore: ' + score, { 
+        let lifetimePoints = window.lifetimePoints || 0;
+        let gameOverMessage = window.tronLink ? 'Game Over\nScore: ' + score + '\nLifetime Points: ' + lifetimePoints : 'Game Over\nScore: ' + score + '\n(Pay to track lifetime points)';
+        gameOverText = this.add.text(400, 300, gameOverMessage, { 
             fontSize: '40px', fill: '#fff', align: 'center' 
         }).setOrigin(0.5);
         this.physics.pause();
         submitScoreToLeaderboard(score);
-        document.getElementById('shareButton').style.display = 'block'; // Show share button
+        document.getElementById('shareButton').style.display = 'block';
     });
 
     scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '20px', fill: '#fff' });
+    lifetimePointsText = this.add.text(10, 40, 'Lifetime Points: 0', { fontSize: '20px', fill: '#fff' });
 
-    // Reset share button when starting a new game
     document.getElementById('shareButton').style.display = 'none';
 }
 
@@ -83,5 +85,5 @@ function update() {
 
 function submitScoreToLeaderboard(score) {
     window.submitScore(score);
-    window.currentScore = score; // Store score for sharing
+    window.currentScore = score;
 }
